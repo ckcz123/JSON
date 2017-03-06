@@ -547,7 +547,7 @@ public class JSON {
                 }
                 if (inQuote||a!=0||b!=0) return null;
                 JSON j=JSON.decode(string.substring(i, np), useSingleQuote);
-                if (j==null) return null;
+                // if (j==null) return null;
                 map.put(key, j);
                 i=np-1;
                 state=3;
@@ -639,7 +639,7 @@ public class JSON {
         arrayList.add(string.substring(pos));
         for (String s: arrayList) {
             JSON j=JSON.decode(s, useSingleQuote);
-            if (j==null) return null;
+            // if (j==null) return null;
             ans.add(j);
         }
         return new JSON(ans);
