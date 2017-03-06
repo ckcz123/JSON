@@ -12,7 +12,7 @@ public class Test {
                 "'list': ['test1', -33, 2.2, true, {'k':'v'}]," +
                 "'sub': {'int': 5, 'string': 'str', 'list':[]} , " +
                 " }";
-        JSON json=JSON.decode(test.replace('\'','"'));
+        JSON json=JSON.decode(test, true);
         System.out.println(JSON.toStringHumanReadable(json));
     }
 }
