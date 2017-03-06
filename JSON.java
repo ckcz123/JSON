@@ -436,32 +436,47 @@ public class JSON {
     }
 
     /**
-     * <p>Decode a string to json.</p>
-     * <p>We assume there will be no character `"` in the string.
-     * (It should be url-encoded to %22!)</p>
+     * <p>Decode a string to json, using `"` to mark strings.</p>
+     * <p>We assume there will be no character `"` or `'` in the string.
+     * (They should be url-encoded!)</p>
      * @param string
      * @return a valid JSON object, or null if it's invalid
      */
     public static JSON decode(String string) {
+        return decode(string, false);
+    }
+
+    /**
+     * <p>Decode a string to json.</p>
+     * <p>If useSingleQuote=true, then use `'` instead of `"` to mark strings.</p>
+     * <p>We assume there will be no character `"` or `'` in the string.
+     * (They should be url-encoded!)</p>
+     * @param string
+     * @param useSingleQuote
+     * @return a valid JSON object, or null if it's invalid
+     */
+    public static JSON decode(String string, boolean useSingleQuote) {
         if (string==null) return null;
+        char quote=useSingleQuote?'\'':'"';
+
         string=string.trim();
         if (string.length()==0) return new JSON();
 
         // judge if it's a basic type
         if (string.charAt(0)!='[' && string.charAt(0)!='{') {
-            return decodeBasicType(string);
+            return decodeBasicType(string, ""+quote);
         }
 
         // if it's a list
         if (string.charAt(0)=='[') {
-            return decodeListType(string);
+            return decodeListType(string, useSingleQuote);
         }
 
         // it's a map
         if (string.charAt(string.length()-1)!='}') return null;
         string=string.substring(1, string.length()-1);
         boolean inQuote=false;
-        int a=0,b=0,pos=0;
+        int a=0,b=0;
 
         // state 0: key; state 1: `:`; state 2: value
         int state=0;
@@ -490,7 +505,7 @@ public class JSON {
                 continue;
             }
 
-            if (c=='"') {
+            if (c==quote) {
                 inQuote=!inQuote;
                 if (inQuote) continue;
                 if (state==0) {
@@ -518,7 +533,7 @@ public class JSON {
                 for (int j=i;j<string.length();j++) {
                     c=string.charAt(j);
                     if (Character.isWhitespace(c)) continue;
-                    if (c=='"') inQuote=!inQuote;
+                    if (c==quote) inQuote=!inQuote;
                     if (inQuote) continue;
                     if (c=='{') a++;
                     if (c=='}') a--;
@@ -531,7 +546,7 @@ public class JSON {
                     }
                 }
                 if (inQuote||a!=0||b!=0) return null;
-                JSON j=JSON.decode(string.substring(i, np));
+                JSON j=JSON.decode(string.substring(i, np), useSingleQuote);
                 if (j==null) return null;
                 map.put(key, j);
                 i=np-1;
@@ -566,7 +581,7 @@ public class JSON {
      * Decode string to a basic JSON object
      * @return
      */
-    private static JSON decodeBasicType(String string) {
+    private static JSON decodeBasicType(String string, String quote) {
         // Integer
         try {
             int x=Integer.parseInt(string);
@@ -589,14 +604,15 @@ public class JSON {
         } catch (Exception ignore) {}
 
         // String, remove `"`
-        return new JSON(string.replace("\"",""));
+        return new JSON(string.replace(quote, ""));
     }
 
     /**
      * Decode string to a list JSON object
      * @return
      */
-    private static JSON decodeListType(String string) {
+    private static JSON decodeListType(String string, boolean useSingleQuote) {
+        char quote=useSingleQuote?'\'':'"';
         if (string.charAt(string.length()-1)!=']') return null;
         string=string.substring(1, string.length()-1).trim();
         if (string.isEmpty()) return new JSON(new ArrayList<>());
@@ -608,7 +624,7 @@ public class JSON {
         for (int i=0;i<string.length();i++) {
             char c=string.charAt(i);
             if (Character.isWhitespace(c)) continue;
-            if (c=='"') inQuote=!inQuote;
+            if (c==quote) inQuote=!inQuote;
             if (inQuote) continue;
             if (c=='{') a++;
             if (c=='}') a--;
@@ -622,7 +638,7 @@ public class JSON {
         }
         arrayList.add(string.substring(pos));
         for (String s: arrayList) {
-            JSON j=JSON.decode(s);
+            JSON j=JSON.decode(s, useSingleQuote);
             if (j==null) return null;
             ans.add(j);
         }
