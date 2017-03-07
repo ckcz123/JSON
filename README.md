@@ -10,7 +10,7 @@ Test code:
         "'int': 3, " +
         "'double': -2.88 ,  " +
         "'boolean':  false , " +
-        "'string' : 'abc +-*/\\%22 ',"+
+        "'string' : 'ab12 +-*/\%21%22%27',"+
         "'list': ['test1', -33, 2.2, true, {'k':'v'}]," +
         "'sub': {'int': 5, 'string': 'str', 'list':[]} , " +
         " }";
@@ -30,7 +30,7 @@ Output:
                "int": 5
              },
       "boolean": false,
-      "string": "abc +-*/\" ",
+      "string": "ab12 +-*/\!"'",
       "double": -2.88,
       "list": [
                 "test1",
