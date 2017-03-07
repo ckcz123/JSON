@@ -470,8 +470,8 @@ public class JSON {
 
     /**
      * <p>Decode a string to json, using `"` to mark strings.</p>
-     * <p>We assume there will be no character `"` or `'` in the string.
-     * (They should be url-encoded!)</p>
+     * <p>We assume there will be no character `"` (%22 instead) 
+     * or `'` (%27 instead) in the string.</p>
      * @param string
      * @return a valid JSON object, or null if it's invalid
      */
@@ -482,8 +482,8 @@ public class JSON {
     /**
      * <p>Decode a string to json.</p>
      * <p>If useSingleQuote=true, then use `'` instead of `"` to mark strings.</p>
-     * <p>We assume there will be no character `"` or `'` in the string.
-     * (They should be url-encoded!)</p>
+     * <p>We assume there will be no character `"` (%22 instead) 
+     * or `'` (%27 instead) in the string.</p>
      * @param string
      * @param useSingleQuote
      * @return a valid JSON object, or null if it's invalid
