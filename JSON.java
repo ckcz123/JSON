@@ -201,15 +201,15 @@ public class JSON {
      */
     public Integer getInt(String key) {
         if (type!=TYPE.JSON) return null;
-        if (!map.containsKey(key)) return null;
-        return map.get(key).getInt();
+        JSON json=map.get(key);
+        return json==null?null:json.getInt();
     }
 
     /**
      * Get an integer by key, or defaultValue if no such key exists
      * @param key
      * @param defaultValue
-     * @return integer
+     * @return integer, or defaultValue
      */
     public int getInt(String key, int defaultValue) {
         Integer integer=getInt(key);
@@ -224,15 +224,15 @@ public class JSON {
      */
     public Double getDouble(String key) {
         if (type!=TYPE.JSON) return null;
-        if (!map.containsKey(key)) return null;
-        return map.get(key).getDouble();
+        JSON json=map.get(key);
+        return json==null?null:json.getDouble();
     }
 
     /**
      * Get a double by key, or defaultValue if no such key exists
      * @param key
      * @param defaultValue
-     * @return double
+     * @return double, or defaultValue
      */
     public double getDouble(String key, double defaultValue) {
         Double d=getDouble(key);
@@ -247,15 +247,15 @@ public class JSON {
      */
     public Boolean getBoolean(String key) {
         if (type!=TYPE.JSON) return null;
-        if (!map.containsKey(key)) return null;
-        return map.get(key).getBoolean();
+        JSON json=map.get(key);
+        return json==null?null:json.getBoolean();
     }
 
     /**
      * Get a boolean by key, or defaultValue if no such key exists
      * @param key
      * @param defaultValue
-     * @return boolean
+     * @return boolean, or defaultValue
      */
     public boolean getBoolean(String key, boolean defaultValue) {
         Boolean b=getBoolean(key);
@@ -270,15 +270,15 @@ public class JSON {
      */
     public String getString(String key) {
         if (type!=TYPE.JSON) return null;
-        if (!map.containsKey(key)) return null;
-        return decodeString(map.get(key).getString());
+        JSON json=map.get(key);
+        return json==null?null:decodeString(json.getString());
     }
 
     /**
      * Get a string by key, or defaultValue if no such key exists
      * @param key
      * @param defaultValue
-     * @return string
+     * @return string, or defaultValue
      */
     public String getString(String key, String defaultValue) {
         String s=getString(key);
@@ -293,26 +293,59 @@ public class JSON {
      */
     public List<JSON> getList(String key) {
         if (type!=TYPE.JSON) return null;
-        if (!map.containsKey(key)) return null;
-        return map.get(key).getList();
+        JSON json=map.get(key);
+        return json==null?null:json.getList();
     }
 
     /**
      * Get a list by key, or defaultValue if no such key exists
      * @param key
-     * @return list, or null
+     * @return list, or defaultValue
      */
     public List<JSON> getList(String key, List<JSON> defaultValue) {
-        List<JSON> list=getList();
+        List<JSON> list=getList(key);
         if (list==null) return defaultValue;
         return list;
     }
 
     /**
-     * If it's a list or map, return its length; else return 0
+     * Get JSON object by key, or null if no such key exists
+     * @param key
+     * @return JSON object, or null
+     */
+    public JSON getJson(String key) {
+        if (type!=TYPE.JSON) return null;
+        return map.get(key);
+    }
+
+    /**
+     * Get JSON object by key, or defaultValue if no such key exists
+     * @param key
+     * @param defaultValue
+     * @return JSON object, or defaultValue;
+     */
+    public JSON getJson(String key, JSON defaultValue) {
+        JSON json=getJson(key);
+        return json==null?defaultValue:json;
+    }
+
+    /**
+     * If it's a list, return the JSON object at the specified position.
+     * @param index
+     * @return JSON object, or null
+     */
+    public JSON getJson(int index) {
+        List<JSON> list=getList();
+        if (list==null) return null;
+        if (index>=list.size()) return null;
+        return list.get(index);
+    }
+
+    /**
+     * If it's a list or map, return its size; else return 0
      * @return length, or 0
      */
-    public int getLength() {
+    public int size() {
         if (type==TYPE.LIST) return listValue.size();
         if (type==TYPE.JSON) return map.size();
         return 0;
