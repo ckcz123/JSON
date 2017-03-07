@@ -8,11 +8,13 @@ public class Test {
                 "'int': 3, " +
                 "'double': -2.88 ,  " +
                 "'boolean':  false , " +
-                "'string' : 'abc +-*/\\%22 ',"+
+                "'string' : 'ab12 +-*/\\%21%22%27',"+
                 "'list': ['test1', -33, 2.2, true, {'k':'v'}]," +
                 "'sub': {'int': 5, 'string': 'str', 'list':[]} , " +
                 " }";
         JSON json=JSON.decode(test, true);
+        System.out.println(JSON.toString(json));
         System.out.println(JSON.toStringHumanReadable(json));
+        System.out.println(JSON.toStringHumanReadable(json.getJson("sub")));
     }
 }
